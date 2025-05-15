@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://github.com/Andrew-Emery/dominos-makeline-trainer/",
+  "homepage": "https://Andrew-Emery.github.io/dominos-makeline-trainer/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
