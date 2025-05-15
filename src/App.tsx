@@ -1,5 +1,6 @@
 import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CrustCodes from './pages/CrustCodes';
@@ -56,32 +57,51 @@ declare module '@mui/material/Chip' {
   }
 }
 
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get('redirect');
+    if (redirect) {
+      navigate(redirect, { replace: true });
+    }
+    // Only run on initial mount
+    // eslint-disable-next-line
+  }, []);
+
+  return (
+    <Box sx={{ 
+      minHeight: '100vh', 
+      bgcolor: 'background.default',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <Header />
+      <Box component="main" sx={{ flex: 1, py: 4 }}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/crust-codes" replace />} />
+          <Route path="/crust-codes" element={<CrustCodes />} />
+          <Route path="/portion-codes" element={<PortionCodes />} />
+          <Route path="/ingredient-codes" element={<IngredientCodes />} />
+          <Route path="/meat-portions" element={<MeatPortions />} />
+          <Route path="/pre-built" element={<PreBuilt />} />
+          <Route path="/test" element={<TestPage />} />
+        </Routes>
+      </Box>
+      <Footer />
+    </Box>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Box sx={{ 
-          minHeight: '100vh', 
-          bgcolor: 'background.default',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <Header />
-          <Box component="main" sx={{ flex: 1, py: 4 }}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/crust-codes" replace />} />
-              <Route path="/crust-codes" element={<CrustCodes />} />
-              <Route path="/portion-codes" element={<PortionCodes />} />
-              <Route path="/ingredient-codes" element={<IngredientCodes />} />
-              <Route path="/meat-portions" element={<MeatPortions />} />
-              <Route path="/pre-built" element={<PreBuilt />} />
-              <Route path="/test" element={<TestPage />} />
-            </Routes>
-          </Box>
-          <Footer />
-        </Box>
-      </Router>
+      <BrowserRouter basename="/dominos-makeline-trainer">
+        <AppContent />
+      </BrowserRouter>
     </ThemeProvider>
   );
 }
